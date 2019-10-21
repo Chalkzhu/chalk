@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jsbarcode/3.6.0/barcodes/JsBarcode.code128.min.js"></script>
+    <style>
+        .QR{text-align:center;}
+        .QR1{background:#77ca00;color:#666;font-weight:100;}
+        .QR3{border:1px #bababa solid}
+        .QR4{font-size:24px;color:#ffd800}
+        .QR5{color:#c4c3c3}
+    </style>
+</head>
+<body>
+    <div class="QR">
+        <div>
+            <h2>二维码在线生成</h2>
+            <p class="QR1">支持将中英文文字、字母、网址、邮箱等转换成二维码</p>
+        </div>
+        <hr />
+        <div>
+            <p>请输入内容然后点击按钮转换</p>
+            <input id="t1" type="text" placeholder="请输入二维码信息" />
+            <button id="btn">转换二维码</button>
+            <button id="btnt">转换条形码</button><br /><br />
+            
+            <div id="code"></div><br />
+            <canvas id="barcode"></canvas>
+        </div>
+        <div class="QR3">
+            <p class="QR4">关于二维码</p>
+            <p class="QR5">二维码 （dimensional barcode） ，又称二维条码，是在一维条码的基础上扩展出的一种具有可读性的条码。设备扫描二维条码，通过识别条码的长度和宽度中所记载的二进制数据，可获取其中所包 含的信息。相比一维条码，二维码记载更复杂的数据，比如图片、网络链接等。</p>
+        </div>
+    </div>
+
+    <script>
+    //转换条形码
+    $("#btnt").on("click",function(){
+        var str = toUtf8($("#t1").val());
+        $("#barcode").JsBarcode(str);  
+    })
+        //转换二维码
+        $("#btn").on("click", function () {
+            var $code = $("#code");
+            $code.empty();
+            var str = toUtf8($("#t1").val());
+            $code.qrcode({
+                render: "canvas",
+                width: 128,
+                height: 128,
+                text: str
+            });
+        });
+        function toUtf8(str) {
+            var out, i, len, c;
+            out = "";
+            len = str.length;
+            for (i = 0; i < len; i++) {
+                c = str.charCodeAt(i);
+                if ((c >= 0x0001) && (c <= 0x007F)) {
+                    out += str.charAt(i);
+                } else if (c > 0x07FF) {
+                    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                    out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                } else {
+                    out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                }
+            }
+            return out;
+        }
+
+    </script>
+</body>
+</html>
